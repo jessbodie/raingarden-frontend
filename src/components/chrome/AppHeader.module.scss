@@ -1,0 +1,71 @@
+.header {
+  background: var(--color-white);
+  // Layered raindrop-splash texture (four low-opacity ripple rings).
+  background-image: radial-gradient(
+      ellipse 46px 30px at 8% 60%,
+      transparent 0 10px,
+      rgba(65, 71, 112, 0.05) 10px 11px,
+      transparent 11px 20px,
+      rgba(65, 71, 112, 0.035) 20px 21px,
+      transparent 21px
+    ),
+    radial-gradient(
+      ellipse 34px 22px at 30% 26%,
+      transparent 0 7px,
+      rgba(65, 71, 112, 0.05) 7px 8px,
+      transparent 8px 15px,
+      rgba(65, 71, 112, 0.03) 15px 16px,
+      transparent 16px
+    ),
+    radial-gradient(
+      ellipse 62px 40px at 93% 55%,
+      transparent 0 14px,
+      rgba(65, 71, 112, 0.045) 14px 15px,
+      transparent 15px 27px,
+      rgba(65, 71, 112, 0.03) 27px 28px,
+      transparent 28px
+    ),
+    radial-gradient(
+      ellipse 30px 20px at 68% 80%,
+      transparent 0 6px,
+      rgba(65, 71, 112, 0.05) 6px 7px,
+      transparent 7px 13px,
+      rgba(65, 71, 112, 0.03) 13px 14px,
+      transparent 14px
+    );
+  box-shadow: 0 2px 8px rgba(55, 34, 72, 0.12);
+  padding: 22px 40px;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  overflow: visible;
+}
+
+.logo {
+  height: clamp(84px, 10.2cqw, 120px);
+  width: auto;
+  flex: 0 0 auto;
+  // Let the tall logo art overflow the header padding without growing it.
+  margin: calc(-1 * clamp(28px, 3.4cqw, 40px)) -0.6em;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(28px, 3.4cqw, 40px);
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  letter-spacing: -0.01em;
+}
+
+@container app (max-width: 560px) {
+  .header {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .title {
+    font-size: 26px;
+  }
+}

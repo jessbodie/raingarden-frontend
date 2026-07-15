@@ -1,0 +1,59 @@
+# Rain Garden Advisor — Frontend
+
+Next.js (App Router) frontend for the Rain Garden Advisor. It calls the existing
+Python/FastAPI backend and renders the flow — it never recomputes anything.
+
+Mounted at `jessbodie.com/raingarden` (`basePath: '/raingarden'`), served from Vercel.
+
+## Stack
+- Next.js 15 (App Router) · TypeScript · **SCSS Modules** (not Tailwind)
+- Montserrat via `next/font/google` (weights 400/500/600/700)
+- Design tokens in `src/styles/tokens.scss` (used as-is; components read `var(--…)`)
+- Light theme only for v1 (tokens kept theme-able for a later dark drop-in)
+
+## Architecture
+- **Landing** (`/`) is a real, server-rendered, indexable route (metadata + JSON-LD).
+- **Address → Chat → Results** is client state within one flow controller.
+- The backend is **client-stateless**: the browser holds the opaque `messages` array
+  and resends it every turn (`src/state/useRainGardenFlow.ts`). It is never parsed or
+  rendered — a separate `chatLog` (built from `assistant_message` + the user's own
+  inputs) is what the chat UI shows. `roof_sqft` is echoed back on every continue.
+
+Key files:
+- `src/lib/types.ts` — the API contract (mirrors the backend).
+- `src/lib/api.ts` — `warmup()` / `seed()` / `continueChat()`.
+- `src/state/useRainGardenFlow.ts` — the client-stateless state machine.
+- `src/components/{chrome,landing,address,chat,results,primitives}` — the UI.
+
+## Config
+Copy `.env.example` → `.env.local` and set:
+
+```
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000   # or the Render URL
+```
+
+The backend must allow this origin via its `ALLOWED_ORIGINS` env var, e.g.
+`ALLOWED_ORIGINS=http://localhost:3000,https://jessbodie.com`.
+
+## Develop
+```
+npm install
+npm run dev      # http://localhost:3000/raingarden
+npm run build
+```
+
+## Click through every state with the mock backend (no token cost)
+```
+npm run mock     # terminal 1 — canned API on http://localhost:8000
+npm run dev      # terminal 2
+```
+The terminal UI state is chosen by the address you enter (e.g. an address with
+`clay` → not-recommended, `decline` → declined, `noplant` → no-plants,
+`nowhere` → address-not-found, `hawaii` → out-of-region). Send a chat message
+containing `error` to test the retry state. See `mock/README.md`.
+
+## Pending copy (PLACEHOLDER)
+Two blocks on the landing page are placeholders awaiting final copy:
+- **About Me** bio (`src/components/landing/LandingScreen.tsx`)
+- **Credits & Sources** list (`src/components/landing/CreditsDisclosure.tsx`) —
+  the home for the RAG guidance source citations.

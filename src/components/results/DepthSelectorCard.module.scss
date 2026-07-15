@@ -1,0 +1,97 @@
+.card {
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  background: var(--surface-card);
+  padding: 22px 24px;
+}
+
+.heading {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.row {
+  font-family: inherit;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.rowSelected {
+  background: var(--color-accent-light);
+}
+
+.confirmedRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 6px 2px;
+}
+
+.radio {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radioOn {
+  border-color: var(--color-accent);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.metric {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.metricNum {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.metricUnit {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+@container app (max-width: 560px) {
+  .row,
+  .confirmedRow {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+}

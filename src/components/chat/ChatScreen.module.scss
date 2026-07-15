@@ -1,0 +1,126 @@
+.wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 26px 40px 44px;
+}
+
+.transcript {
+  min-height: 300px;
+}
+
+.advisor {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  max-width: 80%;
+  margin-bottom: 24px;
+}
+
+.avatar {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-accent-deep);
+  color: var(--color-white);
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.advisorText {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--color-primary-dark);
+  word-spacing: 0.05em;
+  padding-top: 4px;
+  white-space: pre-wrap;
+}
+
+.userRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.userBubble {
+  max-width: 68%;
+  background: var(--color-accent-light);
+  color: var(--color-primary-dark);
+  font-size: 15px;
+  line-height: 1.55;
+  padding: 12px 16px;
+  border-radius: 14px 14px 4px 14px;
+  white-space: pre-wrap;
+}
+
+.pending {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  color: var(--color-primary);
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2.5px solid var(--color-secondary-light);
+  border-top-color: var(--color-primary);
+  animation: rga-spin 1s linear infinite;
+}
+
+.pendingText {
+  font-size: 15px;
+}
+
+.retryRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+}
+
+.retryBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--color-primary-dark);
+  display: flex;
+}
+
+.errorRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 24px;
+}
+
+.errorText {
+  font-size: 15px;
+  color: var(--color-error);
+}
+
+.restartRow {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--color-primary-dark);
+  word-spacing: 0.05em;
+  margin-bottom: 24px;
+}
+
+@container app (max-width: 560px) {
+  .wrap {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .advisor {
+    max-width: 100%;
+  }
+  .userBubble {
+    max-width: 88%;
+  }
+}

@@ -1,0 +1,128 @@
+.section {
+  margin-top: 26px;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+
+.container {
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  background: var(--surface-card);
+  overflow: hidden;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 6px 6px 0;
+}
+
+.tab {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 0 4px 0 0;
+  padding: 9px 18px;
+  cursor: pointer;
+  background: var(--color-white);
+  color: var(--color-primary-dark);
+}
+
+.tabActive {
+  background: var(--color-accent-light);
+}
+
+.copyTable {
+  margin-left: auto;
+  align-self: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+  color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.copied {
+  font-size: 12px;
+  color: var(--color-accent-deep);
+  font-weight: 500;
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 560px;
+}
+
+.headRow {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-white);
+}
+
+.th {
+  padding: 12px 14px;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.thInner {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.arrow {
+  font-size: 10px;
+}
+
+.bodyRow {
+  border-top: 1px solid var(--color-border);
+}
+
+.td {
+  padding: 12px 14px;
+  color: var(--text-body);
+}
+
+.tdName {
+  color: var(--color-primary-dark);
+  font-weight: 500;
+}
+
+.noPlants {
+  border-top: 1px solid var(--color-border);
+  padding: 28px 20px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-body);
+}
+
+@container app (max-width: 760px) {
+  .table {
+    font-size: 12px;
+  }
+}

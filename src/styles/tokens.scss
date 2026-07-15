@@ -1,0 +1,142 @@
+// =============================================================================
+// Rain Garden Advisor — Design Tokens
+// Ported from jessbodie.com (Next.js portfolio) and extended for app UI.
+//   🟢 = extracted verbatim from the live site   🟡 = derived / extended for the app
+//
+// Stack: SCSS Modules. Tokens are provided as SCSS variables (for use in modules
+// via `map`/`var`) AND as CSS custom properties on :root (so a future dark theme
+// is a token re-map — see DESIGN_SPEC §9). Components MUST read the CSS custom
+// properties (var(--...)), never hard-coded hex, so theming is a drop-in.
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// 1. COLOR — SCSS source values
+// -----------------------------------------------------------------------------
+
+// Brand palette 🟢 (extracted)
+$color-primary-dark:    #372248; // aubergine — headings, primary text, footer, "black"
+$color-primary:         #414770; // indigo/slate — links, focus rings, shadow tint
+$color-secondary:       #5B85AA; // steel blue — secondary/default button fill
+$color-secondary-light: #a9bfd3; // pale blue — borders, disabled, subtle fills
+$color-tertiary:        #F56E48; // coral — WARNING/ERROR SIGNAL ONLY (never accent)
+$color-white:           #eeeff5; // lavender-tinted off-white — app background
+$color-white-true:      #ffffff; // pure white — card + input surfaces
+$color-black:           #372248; // alias of primary-dark (no true black on brand)
+$color-blacker:         #0b070e; // near-black — deep shadow tint / overlays
+
+// Sage accent ramp 🟡 (§2.2 — replaces coral as the accent)
+$color-accent-light:    #C2D1B6; // subtle fills, selected-row wash, hover wash
+$color-accent:          #7E9B76; // THE accent — primary CTA, selected borders
+$color-accent-deep:     #5C7554; // complete / success — finished stages, checks
+
+// Semantic status 🟡 (§2.1) — coral = wrong, sage = good
+$color-success:         $color-accent-deep; // #5C7554 finished / plan ready
+$color-warning:         $color-tertiary;    // #F56E48 corrective advisory (coexists w/ plan)
+$color-error:           #8F3A2E;            // deepened coral — blocking / not-recommended / form error (AA on white)
+$color-info:            $color-secondary;   // #5B85AA neutral info note
+$color-border:          $color-secondary-light; // #a9bfd3 dividers, input borders, disabled
+
+// -----------------------------------------------------------------------------
+// 2. TYPOGRAPHY
+// -----------------------------------------------------------------------------
+$font-family:  'Montserrat', sans-serif;    // 🟢 the only typeface on the site
+$font-400: 400;  // body                         🟢
+$font-500: 500;  // secondary / tertiary heads   🟢
+$font-600: 600;  // primary headings             🟢
+$font-700: 700;  // footer links / emphasis      🟢
+
+// Type scale 🟢 (rem, off the fluid root). App-chrome sizes 🟡 added below.
+$fs-h1:      clamp(3rem, 2.4rem + 2.4vw, 4rem);  // heading primary
+$fs-h2:      2rem;    // heading secondary
+$fs-h3:      1.8rem;  // heading tertiary
+$fs-body:    1.25rem; // body
+$fs-label:   1.1rem;  // 🟡 form / UI labels (500)
+$fs-caption: 1rem;    // fine print / copyright
+$fs-badge:   0.9rem;  // 🟡 chips / badges (500)
+$word-spacing-prose: 0.35rem; // 🟢 editorial airiness for explanatory prose
+
+// -----------------------------------------------------------------------------
+// 3. SPACING 🟡 (formalized 8-step scale, built from $left-margin rhythm)
+// -----------------------------------------------------------------------------
+$space-1: 0.5rem;
+$space-2: 1rem;
+$space-3: 1.5rem;   // == $margin-scroll 🟢
+$space-4: 2rem;     // == $gutter-sm 🟢
+$space-5: 3rem;
+$space-6: 4rem;     // == $left-margin 🟢 (dominant gutter)
+$space-7: 6rem;
+$space-8: 8rem;
+
+$measure:      64rem;    // 🟡 single-column reading/chat measure cap
+$radius-sharp: 4px;      // geometric — sharp to ≤4px
+$radius-soft:  14px;     // chat bubbles + response input ONLY (the one exception)
+
+// -----------------------------------------------------------------------------
+// 4. BREAKPOINTS 🟢 (em-based, for zoom/a11y)
+// -----------------------------------------------------------------------------
+$bp-mobile:      37.5em;  // ≤600
+$bp-tab-port:    37.5em;  // 600+
+$bp-tab-land:    56.25em; // 900+
+$bp-desktop:     75em;    // 1200+
+$bp-big-desktop: 112.5em; // 1800+
+
+// -----------------------------------------------------------------------------
+// 5. ELEVATION & MOTION 🟢
+// -----------------------------------------------------------------------------
+$shadow-soft:  0.2rem 0.5rem 0.5rem rgba($color-primary, 0.6); // violet-tinted, down-right
+$shadow-lift:  0 1px 4px rgba($color-primary-dark, 0.3);
+$motion-dur:   300ms;
+$motion-rise:  translateY(-2px); // hover lift
+$z-screens: 1000;
+$z-text-over: 2000;
+$z-header: 4000;
+$z-overlay: 4100; // toasts/modals above header
+
+// -----------------------------------------------------------------------------
+// 6. CSS CUSTOM PROPERTIES — the runtime contract (theme-able; §9)
+//    Re-map these under :root[data-theme="dark"] later; components use var(--...).
+// -----------------------------------------------------------------------------
+:root {
+  // brand
+  --color-primary-dark:    #{$color-primary-dark};
+  --color-primary:         #{$color-primary};
+  --color-secondary:       #{$color-secondary};
+  --color-secondary-light: #{$color-secondary-light};
+  --color-tertiary:        #{$color-tertiary};
+  --color-white:           #{$color-white};
+  --color-white-true:      #{$color-white-true};
+  --color-black:           #{$color-black};
+  --color-blacker:         #{$color-blacker};
+  // sage ramp
+  --color-accent-light:    #{$color-accent-light};
+  --color-accent:          #{$color-accent};
+  --color-accent-deep:     #{$color-accent-deep};
+  // semantic
+  --color-success:         #{$color-success};
+  --color-warning:         #{$color-warning};
+  --color-error:           #{$color-error};
+  --color-info:            #{$color-info};
+  --color-border:          #{$color-border};
+  // surfaces / text
+  --surface-app:           #{$color-white};
+  --surface-card:          #{$color-white-true};
+  --text-body:             #{$color-primary-dark};
+  --text-muted:            #{rgba($color-primary-dark, 0.62)};
+  --link:                  #{$color-primary};
+  --link-hover:            #{$color-accent-deep};
+  // type
+  --font-family:           #{$font-family};
+  // spacing
+  --space-1: #{$space-1}; --space-2: #{$space-2}; --space-3: #{$space-3}; --space-4: #{$space-4};
+  --space-5: #{$space-5}; --space-6: #{$space-6}; --space-7: #{$space-7}; --space-8: #{$space-8};
+  --measure: #{$measure};
+  --radius-sharp: #{$radius-sharp};
+  --radius-soft:  #{$radius-soft};
+  // elevation / motion
+  --shadow-soft: #{$shadow-soft};
+  --shadow-lift: #{$shadow-lift};
+  --motion-dur:  #{$motion-dur};
+}
+
+// Future dark theme lives here (deferred — §9). Only re-map values, no new tokens.
+// :root[data-theme="dark"] { --surface-app: #{$color-primary-dark}; ... }

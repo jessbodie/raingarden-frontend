@@ -1,0 +1,62 @@
+.wrap {
+  padding: 56px 40px 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 660px;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  background: var(--surface-card);
+  padding: 34px 40px;
+  box-shadow: var(--shadow-soft);
+}
+
+.labelRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-primary-dark);
+}
+
+.input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--color-primary-dark);
+  background: var(--color-white-true);
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: 13px 15px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(65, 71, 112, 0.15);
+  }
+  &:disabled {
+    opacity: 0.7;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+@container app (max-width: 560px) {
+  .wrap {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}

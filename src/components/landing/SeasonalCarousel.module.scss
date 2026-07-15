@@ -1,0 +1,83 @@
+.figure {
+  margin: 44px 0 0;
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background-color: #241531;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.month {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  padding: 5px 14px;
+  border-radius: 2px;
+  background: rgba(36, 21, 49, 0.72);
+  color: var(--color-white);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(36, 21, 49, 0.6);
+  color: var(--color-white);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: rgba(36, 21, 49, 0.85);
+  }
+}
+
+.prev {
+  left: 12px;
+}
+.next {
+  right: 12px;
+}
+
+.dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.caption {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-body);
+  word-spacing: 0.04em;
+}

@@ -1,0 +1,83 @@
+@use '../styles/tokens';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-montserrat), var(--font-family);
+  background: var(--surface-app);
+  color: var(--text-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+a:hover {
+  color: var(--link-hover);
+}
+
+button {
+  font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+// --- Motion keyframes (ported from the prototype) ---
+@keyframes rga-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rga-fadeup {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rga-fu {
+  animation: rga-fadeup 500ms ease both;
+}
+.rga-fu2 {
+  animation: rga-fadeup 500ms ease 0.12s both;
+}
+.rga-fu3 {
+  animation: rga-fadeup 500ms ease 0.24s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+  .rga-fu,
+  .rga-fu2,
+  .rga-fu3 {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

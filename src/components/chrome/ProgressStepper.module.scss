@@ -1,0 +1,64 @@
+.band {
+  // Full-bleed pale-blue band directly below the header.
+  background: var(--color-secondary-light);
+  padding: 16px 40px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stageWrap {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.stage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.circle {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.complete {
+  background: var(--color-accent-deep);
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.connector {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 2px;
+  margin: 0 12px;
+  border-radius: 1px;
+}
+
+@container app (max-width: 560px) {
+  .band {
+    padding: 10px 8px;
+  }
+  .row {
+    gap: 2px;
+  }
+  .label {
+    display: none;
+  }
+}
