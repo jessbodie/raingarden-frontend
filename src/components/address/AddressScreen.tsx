@@ -16,13 +16,24 @@ const ERROR_COPY: Record<'address_not_found' | 'out_of_region', string> = {
 export function AddressScreen() {
   const flow = useFlow();
   const [value, setValue] = useState('');
+  // Local validation so an empty submit isn't a silent no-op (the placeholder
+  // reads like a real address, so it's easy to click Submit on a blank field).
+  const [emptyError, setEmptyError] = useState(false);
 
   const submit = () => {
-    if (!flow.addressSubmitting) flow.submitAddress(value);
+    if (flow.addressSubmitting) return;
+    if (!value.trim()) {
+      setEmptyError(true);
+      return;
+    }
+    setEmptyError(false);
+    flow.submitAddress(value);
   };
 
   let errorMessage: string | null = null;
-  if (flow.addressError === 'address_not_found' || flow.addressError === 'out_of_region') {
+  if (emptyError) {
+    errorMessage = 'Please enter an address.';
+  } else if (flow.addressError === 'address_not_found' || flow.addressError === 'out_of_region') {
     errorMessage = ERROR_COPY[flow.addressError];
   } else if (flow.addressError === 'error') {
     errorMessage = flow.addressDetail ?? 'Something went wrong.... please retry in a moment.';
@@ -43,7 +54,10 @@ export function AddressScreen() {
           className={styles.input}
           placeholder="98 80th St. Brooklyn NY"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => {
+            setValue(e.target.value);
+            if (emptyError) setEmptyError(false);
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') submit();
           }}
