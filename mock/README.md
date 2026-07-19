@@ -10,12 +10,21 @@ no CORS setup (it sends permissive CORS headers itself).
 Two terminals:
 
 ```
-npm run mock     # terminal 1 — mock backend on http://localhost:8000
+npm run mock     # terminal 1 — mock backend on http://localhost:8001
 npm run dev      # terminal 2 — frontend on http://localhost:3000/raingarden
 ```
 
-`.env.local` already points at `http://localhost:8000`, so nothing else to change.
-(Custom port: `PORT=8123 npm run mock` + update `NEXT_PUBLIC_API_BASE_URL`.)
+Then point the frontend at it — in `.env.local`, switch the active line to:
+
+```
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8001
+```
+
+> The mock runs on **8001**, not 8000, on purpose. The real backend owns 8000, and
+> on Windows both can bind it at once — the mock then silently shadows uvicorn and
+> you get stub data with no error to explain why.
+
+(Custom port: `PORT=8123 npm run mock` + match `NEXT_PUBLIC_API_BASE_URL`.)
 
 ## Which state you get is chosen by the ADDRESS you submit
 

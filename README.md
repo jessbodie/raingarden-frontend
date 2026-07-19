@@ -26,13 +26,28 @@ Key files:
 - `src/components/{chrome,landing,address,chat,results,primitives}` — the UI.
 
 ## Config
-Copy `.env.example` → `.env.local` and set:
+
+This app has **one** env var and holds **no secrets** (every API key — Anthropic,
+RapidAPI, Google Solar — lives on the backend). Create `.env.local`:
 
 ```
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8000   # or the Render URL
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 ```
 
-The backend must allow this origin via its `ALLOWED_ORIGINS` env var, e.g.
+Pick the base URL to suit:
+
+| Target | URL |
+|---|---|
+| Real local backend | `http://localhost:8000` (`uvicorn app:app --reload`) |
+| Mock backend | `http://localhost:8001` (`npm run mock` — no token cost) |
+| Deployed (Render) | `https://rain-garden-advisor-api.onrender.com` |
+
+On Vercel, set `NEXT_PUBLIC_API_BASE_URL` in the project's environment variables.
+
+> ⚠️ `NEXT_PUBLIC_*` vars are inlined into the browser bundle — never put a secret
+> behind that prefix.
+
+CORS is configured on the **backend**, not here: `raingardentool/.env` →
 `ALLOWED_ORIGINS=http://localhost:3000,https://jessbodie.com`.
 
 ## Develop
@@ -44,9 +59,11 @@ npm run build
 
 ## Click through every state with the mock backend (no token cost)
 ```
-npm run mock     # terminal 1 — canned API on http://localhost:8000
+npm run mock     # terminal 1 — canned API on http://localhost:8001
 npm run dev      # terminal 2
 ```
+Then switch the active line in `.env.local` to `http://localhost:8001`. (The mock
+uses 8001 so it can't silently shadow the real backend on 8000.)
 The terminal UI state is chosen by the address you enter (e.g. an address with
 `clay` → not-recommended, `decline` → declined, `noplant` → no-plants,
 `nowhere` → address-not-found, `hawaii` → out-of-region). Send a chat message

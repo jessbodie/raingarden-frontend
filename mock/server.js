@@ -4,10 +4,10 @@
 // EVERY state at zero token cost. Includes permissive CORS (the whole point:
 // no CORS hassle for local UI work).
 //
-//   node mock/server.js            # listens on :8000
+//   node mock/server.js            # listens on :8001
 //   PORT=8123 node mock/server.js  # custom port
 //
-// Then in .env.local: NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+// Then in .env.local: NEXT_PUBLIC_API_BASE_URL=http://localhost:8001
 //
 // The TERMINAL state is chosen by keywords in the address you submit:
 //   (default)                 -> recommended plan
@@ -21,7 +21,10 @@
 
 const http = require('http');
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 8000;
+// Deliberately NOT 8000 — that's the real backend's port. Sharing it lets the
+// mock silently shadow uvicorn (both bind successfully on Windows) and you end
+// up staring at stub data wondering why the real backend "isn't working".
+const PORT = process.env.PORT ? Number(process.env.PORT) : 8001;
 const LATENCY_MS = 650; // so the "percolating…" spinner is visible
 
 // ---------- stage helpers ----------
