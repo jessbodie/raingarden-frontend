@@ -52,7 +52,7 @@ export function AddressScreen() {
           id="rg-address"
           type="text"
           className={styles.input}
-          placeholder="98 80th St. Brooklyn NY"
+          placeholder="enter address"
           value={value}
           onChange={(e) => {
             setValue(e.target.value);

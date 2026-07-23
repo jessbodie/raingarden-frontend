@@ -42,6 +42,11 @@
   align-items: center;
   gap: 14px;
   overflow: visible;
+  // Rendered as an <a> home link — strip default link styling.
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  width: fit-content;
 }
 
 .logo {
