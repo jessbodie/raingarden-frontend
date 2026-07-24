@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { useFlow } from '@/state/FlowContext';
 import { ErrorCircleIcon, RefreshIcon } from '../primitives/Icons';
 import { ChatInput } from './ChatInput';
@@ -8,10 +9,20 @@ import styles from './ChatScreen.module.scss';
 export function ChatScreen() {
   const flow = useFlow();
   const showInput = !flow.declined;
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Keep the newest message in view (Claude-style): pin the transcript scroll
+  // region to the bottom whenever the log grows or a pending/error/decline row
+  // appears.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [flow.chatLog, flow.pending, flow.chatError, flow.declined]);
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.transcript}>
+      <div className={styles.scroll} ref={scrollRef}>
+        <div className={styles.transcript}>
         {flow.chatLog.map((m, i) =>
           m.role === 'advisor' ? (
             <div key={i} className={`${styles.advisor} rga-fu`}>
@@ -68,9 +79,16 @@ export function ChatScreen() {
             . Good luck with your future gardening adventures!
           </div>
         )}
+        </div>
       </div>
 
-      {showInput && <ChatInput disabled={flow.pending} onSend={flow.sendMessage} />}
+      {showInput && (
+        <div className={styles.inputDock}>
+          <div className={styles.inputInner}>
+            <ChatInput disabled={flow.pending} onSend={flow.sendMessage} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

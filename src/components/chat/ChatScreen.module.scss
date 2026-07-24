@@ -1,11 +1,36 @@
+// Fills the locked `main` (see AppShell.mainLocked) as a flex column: the
+// transcript scrolls, the input dock stays pinned at the bottom.
 .wrap {
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 26px 40px 44px;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+// The scroll region. Full-width so the scrollbar sits at the viewport edge
+// (Claude-style); the content is centered by `.transcript` inside it.
+.scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .transcript {
-  min-height: 300px;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 26px 40px 20px;
+}
+
+.inputDock {
+  flex: 0 0 auto;
+  background: var(--surface-app);
+}
+
+.inputInner {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 40px 20px;
 }
 
 .advisor {
@@ -113,7 +138,8 @@
 }
 
 @container app (max-width: 560px) {
-  .wrap {
+  .transcript,
+  .inputInner {
     padding-left: 18px;
     padding-right: 18px;
   }

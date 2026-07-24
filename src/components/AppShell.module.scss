@@ -8,7 +8,25 @@
   overflow: hidden;
 }
 
+// Chat phase: pin the shell to the viewport so header/stepper stay at the top
+// and the input/footer stay at the bottom, with only the transcript scrolling.
+// `dvh` tracks the mobile URL bar / on-screen keyboard so the input isn't hidden.
+.frameLocked {
+  min-height: 0;
+  height: 100vh;
+  height: 100dvh;
+}
+
 .main {
   flex: 1 0 auto;
   min-height: 420px;
+}
+
+// The single flex child (ChatScreen) fills this and owns the inner scroll.
+// `min-height: 0` lets it shrink below its content so the child can scroll.
+.mainLocked {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
 }

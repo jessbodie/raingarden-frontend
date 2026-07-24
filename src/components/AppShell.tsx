@@ -25,12 +25,15 @@ export function AppShell({ landing }: { landing: ReactNode }) {
   const flow = useFlow();
   const showStepper = flow.phase !== 'landing';
   const stages = flow.stages ?? (flow.phase === 'address' ? ADDRESS_FALLBACK : null);
+  // Chat is the only phase that locks to the viewport with an inner scroll
+  // region (Claude-style); landing/address/results keep natural page scroll.
+  const locked = flow.phase === 'chat';
 
   return (
-    <div className={styles.frame}>
+    <div className={`${styles.frame} ${locked ? styles.frameLocked : ''}`}>
       <AppHeader />
       {showStepper && stages && <ProgressStepper stages={stages} declined={flow.declined} />}
-      <main className={styles.main}>
+      <main className={`${styles.main} ${locked ? styles.mainLocked : ''}`}>
         {flow.phase === 'landing' && landing}
         {flow.phase === 'address' && <AddressScreen />}
         {flow.phase === 'chat' && <ChatScreen />}
