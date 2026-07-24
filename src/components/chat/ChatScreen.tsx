@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useFlow } from '@/state/FlowContext';
+import { renderInlineMarkdown } from '@/lib/inlineMarkdown';
 import { ErrorCircleIcon, RefreshIcon } from '../primitives/Icons';
 import { ChatInput } from './ChatInput';
 import styles from './ChatScreen.module.scss';
@@ -27,7 +28,7 @@ export function ChatScreen() {
           m.role === 'advisor' ? (
             <div key={i} className={`${styles.advisor} rga-fu`}>
               <span className={styles.avatar}>RG</span>
-              <div className={styles.advisorText}>{m.text}</div>
+              <div className={styles.advisorText}>{renderInlineMarkdown(m.text)}</div>
             </div>
           ) : (
             <div key={i} className={`${styles.userRow} rga-fu`}>
