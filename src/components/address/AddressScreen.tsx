@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useFlow } from '@/state/FlowContext';
+import { SUBMIT_PHRASES } from '@/state/useRainGardenFlow';
 import { PrimaryButton } from '../primitives/PrimaryButton';
 import { InfoTooltip } from '../primitives/InfoTooltip';
 import { InlineError } from '../primitives/InlineError';
@@ -67,8 +68,15 @@ export function AddressScreen() {
         {errorMessage && <InlineError message={errorMessage} />}
 
         <div className={styles.actions}>
-          <PrimaryButton size="sm" onClick={submit} disabled={flow.addressSubmitting}>
-            {flow.addressSubmitting ? 'Looking up…' : 'Submit'}
+          <PrimaryButton
+            size="sm"
+            onClick={submit}
+            disabled={flow.addressSubmitting}
+            className={flow.addressSubmitting ? styles.submitBtn : undefined}
+          >
+            {flow.addressSubmitting
+              ? SUBMIT_PHRASES[flow.addressPhase] ?? SUBMIT_PHRASES[0]
+              : 'Submit'}
           </PrimaryButton>
         </div>
       </div>

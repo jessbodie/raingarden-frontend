@@ -12,6 +12,30 @@ const PENDING_TEXT = 'percolating...';
 const PENDING_TEXT_SLOW = 'still percolating, please be patient...';
 const SLOW_AFTER_MS = 7000;
 
+// Whimsical Submit-button labels cycled while the seed request is in flight. The
+// seed is one atomic /chat call (geocode + roof + first model turn), so the client
+// gets no mid-flight signal — this is a TIMED simulation of the work happening
+// server-side, not real telemetry. Phases map loosely to the backend steps:
+// 0 geocode, 1 roof estimate, 2 precipitation, 3 hardiness, 4 first model turn.
+const SUBMIT_PHRASES = [
+  'Pinpointing your patch of earth…',
+  'Peeking at your roof from space…',
+  'Consulting the rain clouds…',
+  'Sizing up your frostiest nights…',
+  'Digging into the details…',
+];
+// Per-phase dwell times (ms): how long each phrase stays before advancing. The
+// first ("Pinpointing…") lingers a beat longer; the rest are a touch slower than a
+// plain rhythm so nothing flickers past. There is no entry for the final phrase
+// (index 4) — it simply holds until the request returns. A fast request may never
+// reach the later phrases, which is fine.
+const SUBMIT_PHASE_DELAYS = [2600, 2400, 2400, 2400];
+// "Pinpointing your patch of earth…" (phase 0) IS the address lookup, so the move
+// off it — to phase 1 — is when the Address checkmark lands and Localized Data
+// picks up the in-progress cursor.
+export const SUBMIT_LOCALIZED_PHASE = 1;
+export { SUBMIT_PHRASES };
+
 export type FlowState = {
   phase: Phase;
   // rendered chat transcript (NEVER built from `messages`)
@@ -26,6 +50,9 @@ export type FlowState = {
   declined: boolean;
   // address sub-states
   addressSubmitting: boolean;
+  // Index into SUBMIT_PHRASES; the current button label + the simulated stepper
+  // advance are both derived from it. Only meaningful while addressSubmitting.
+  addressPhase: number;
   addressError: AddressErrorKind;
   addressDetail: string | null;
 };
@@ -50,6 +77,7 @@ const INITIAL: FlowState = {
   chatError: false,
   declined: false,
   addressSubmitting: false,
+  addressPhase: 0,
   addressError: null,
   addressDetail: null,
 };
@@ -62,13 +90,42 @@ export function useRainGardenFlow(): FlowState & FlowActions {
   const roofSqft = useRef<number | null>(null);
   const lastUserMessage = useRef<string | null>(null);
   const slowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const submitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Fire /warmup once on mount, fire-and-forget.
   useEffect(() => {
     void warmup();
     return () => {
       if (slowTimer.current) clearTimeout(slowTimer.current);
+      if (submitTimer.current) clearTimeout(submitTimer.current);
     };
+  }, []);
+
+  // Advance the Submit-button phase while the seed request is in flight, using the
+  // per-phase dwell times (chained timeouts, not a fixed interval, so the first
+  // phrase can linger longer). Holds on the final phrase if the request outlasts
+  // the sequence.
+  const startSubmitTimer = useCallback(() => {
+    if (submitTimer.current) clearTimeout(submitTimer.current);
+    const schedule = (phase: number) => {
+      if (phase >= SUBMIT_PHASE_DELAYS.length) return; // last phrase holds
+      submitTimer.current = setTimeout(() => {
+        setState((s) =>
+          s.addressSubmitting && s.addressPhase < SUBMIT_PHRASES.length - 1
+            ? { ...s, addressPhase: s.addressPhase + 1 }
+            : s,
+        );
+        schedule(phase + 1);
+      }, SUBMIT_PHASE_DELAYS[phase]);
+    };
+    schedule(0);
+  }, []);
+
+  const clearSubmitTimer = useCallback(() => {
+    if (submitTimer.current) {
+      clearTimeout(submitTimer.current);
+      submitTimer.current = null;
+    }
   }, []);
 
   const startPendingTimer = useCallback(() => {
@@ -176,12 +233,18 @@ export function useRainGardenFlow(): FlowState & FlowActions {
       setState((s) => ({
         ...s,
         addressSubmitting: true,
+        addressPhase: 0,
         addressError: null,
         addressDetail: null,
       }));
+      startSubmitTimer();
       seed(trimmed)
-        .then(applyResponse)
+        .then((res) => {
+          clearSubmitTimer();
+          applyResponse(res);
+        })
         .catch((e: unknown) => {
+          clearSubmitTimer();
           const message = e instanceof ApiError ? e.message : 'Something went wrong.';
           setState((s) => ({
             ...s,
@@ -191,7 +254,7 @@ export function useRainGardenFlow(): FlowState & FlowActions {
           }));
         });
     },
-    [applyResponse],
+    [applyResponse, startSubmitTimer, clearSubmitTimer],
   );
 
   const sendMessage = useCallback(
@@ -242,8 +305,9 @@ export function useRainGardenFlow(): FlowState & FlowActions {
     roofSqft.current = null;
     lastUserMessage.current = null;
     clearPendingTimer();
+    clearSubmitTimer();
     setState(INITIAL);
-  }, [clearPendingTimer]);
+  }, [clearPendingTimer, clearSubmitTimer]);
 
   // From the no-plants results screen: go back to the chat to refine (input re-enabled).
   const returnToChat = useCallback(() => {

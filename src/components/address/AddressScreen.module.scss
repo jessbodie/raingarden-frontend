@@ -54,9 +54,25 @@
   margin-top: 22px;
 }
 
+// Applied only while submitting, when the button shows a cycling whimsical phrase.
+// A fixed min-width sized to the longest phrase keeps the button from resizing as
+// phrases swap (no horizontal jitter); nowrap keeps each phrase on one line.
+.submitBtn {
+  min-width: 300px;
+  white-space: nowrap;
+  text-align: center;
+}
+
 @container app (max-width: 560px) {
   .wrap {
     padding-left: 18px;
     padding-right: 18px;
+  }
+  // Too narrow for a 300px pill — go full-width and allow the phrase to wrap
+  // rather than overflow the card.
+  .submitBtn {
+    min-width: 0;
+    width: 100%;
+    white-space: normal;
   }
 }
