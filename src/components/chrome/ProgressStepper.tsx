@@ -14,9 +14,12 @@ type Props = {
   // Frontend-only treatment: when the conversation was declined, the current
   // in_progress circle gets a dashed "halt" look. Not a Stage value.
   declined?: boolean;
+  // While a request is in flight, the in-progress circle spins like a browser
+  // tab loader to signal "working". Frontend-only; not a Stage value.
+  loading?: boolean;
 };
 
-export function ProgressStepper({ stages, declined = false }: Props) {
+export function ProgressStepper({ stages, declined = false, loading = false }: Props) {
   return (
     <div className={styles.band}>
       <div className={styles.row}>
@@ -49,7 +52,12 @@ export function ProgressStepper({ stages, declined = false }: Props) {
                     <CheckIcon size={12} style={{ stroke: 'var(--color-white)' }} />
                   </span>
                 )}
-                {isInProgress && <span className={styles.circle} style={inProgStyle} />}
+                {isInProgress && (
+                  <span
+                    className={`${styles.circle} ${loading ? styles.spin : ''}`}
+                    style={inProgStyle}
+                  />
+                )}
                 {isFrozen && (
                   <span
                     className={styles.circle}

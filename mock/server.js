@@ -25,7 +25,17 @@ const http = require('http');
 // mock silently shadow uvicorn (both bind successfully on Windows) and you end
 // up staring at stub data wondering why the real backend "isn't working".
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8001;
-const LATENCY_MS = 650; // so the "percolating…" spinner is visible
+
+// Response delays (ms), tuned so the frontend's TIMED animations are actually
+// visible: the address-submit phrases + Address→checkmark stepper bump begin
+// ~2.7s into the seed, and the finale "building your plan" phrases begin ~3.5s
+// into the terminal turn. Ordinary Q&A turns stay snappy so the chat still feels
+// responsive. Override any via env (MOCK_SEED_MS / MOCK_CHAT_MS / MOCK_FINALE_MS);
+// set them low (e.g. 0) to go back to the old instant behavior.
+const num = (v, d) => (v !== undefined ? Number(v) : d);
+const SEED_MS = num(process.env.MOCK_SEED_MS, 5000); // address-submit animation
+const CHAT_MS = num(process.env.MOCK_CHAT_MS, 700); // intermediate question turns
+const FINALE_MS = num(process.env.MOCK_FINALE_MS, 8000); // terminal plan turn (finale)
 
 // ---------- stage helpers ----------
 const S = ['address', 'localized_data', 'site_conditions', 'growing_conditions', 'plan'];
@@ -257,7 +267,12 @@ const server = http.createServer((req, res) => {
         return;
       }
       const out = handleChat(payload);
-      setTimeout(() => send(200, out), payload.address ? 0 : LATENCY_MS);
+      // Seed -> address animation; terminal (complete) -> finale animation;
+      // everything else (intermediate questions, error/retry) -> snappy.
+      let delay = CHAT_MS;
+      if (payload.address) delay = SEED_MS;
+      else if (out.status === 'complete') delay = FINALE_MS;
+      setTimeout(() => send(200, out), delay);
     });
     return;
   }
@@ -269,4 +284,6 @@ server.listen(PORT, () => {
   console.log(`[mock] Rain Garden Advisor mock backend on http://localhost:${PORT}`);
   // eslint-disable-next-line no-console
   console.log('[mock] address keywords: clay/notrec, decline/slow, noplant/barren, nowhere/notfound, canada/alaska; chat "error" to test retry');
+  // eslint-disable-next-line no-console
+  console.log(`[mock] delays: seed ${SEED_MS}ms, chat ${CHAT_MS}ms, finale ${FINALE_MS}ms (override via MOCK_SEED_MS / MOCK_CHAT_MS / MOCK_FINALE_MS)`);
 });

@@ -95,7 +95,16 @@
   border-radius: 50%;
   border: 2.5px solid var(--color-secondary-light);
   border-top-color: var(--color-primary);
-  animation: rga-spin 1s linear infinite;
+  // Keyframe defined locally: the CSS-module loader scopes both the @keyframes
+  // and this reference to the same hashed name. Referencing the global rga-spin
+  // fails here — the loader rewrites the name to a nonexistent local one.
+  animation: spinner-rotate 1s linear infinite;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .pendingText {

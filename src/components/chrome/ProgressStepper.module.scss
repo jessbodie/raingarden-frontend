@@ -37,6 +37,20 @@
   background: var(--color-accent-deep);
 }
 
+// While a request is in flight, spin the in-progress conic-gradient ring like a
+// browser tab loader. The keyframe is defined locally so the CSS-module loader
+// scopes the @keyframes and this reference to the same name (a reference to the
+// global rga-spin gets rewritten to a nonexistent local name and no-ops).
+.spin {
+  animation: ring-rotate 1s linear infinite;
+}
+
+@keyframes ring-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .label {
   font-size: 14px;
   font-weight: 500;

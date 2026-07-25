@@ -57,13 +57,14 @@ npm run dev      # http://localhost:3000/raingarden
 npm run build
 ```
 
-## Click through every state with the mock backend (no token cost)
+## Run in mock mode to simulate backend (no token cost)
+Switch the active line in `.env.local` to `http://localhost:8001`. (The mock
+uses 8001 so it can't silently shadow the real backend on 8000.)
+Then from the frontend root, run both:
 ```
 npm run mock     # terminal 1 — canned API on http://localhost:8001
 npm run dev      # terminal 2
 ```
-Then switch the active line in `.env.local` to `http://localhost:8001`. (The mock
-uses 8001 so it can't silently shadow the real backend on 8000.)
 The terminal UI state is chosen by the address you enter (e.g. an address with
 `clay` → not-recommended, `decline` → declined, `noplant` → no-plants,
 `nowhere` → address-not-found, `hawaii` → out-of-region). Send a chat message

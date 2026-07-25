@@ -12,6 +12,30 @@ const PENDING_TEXT = 'percolating...';
 const PENDING_TEXT_SLOW = 'still percolating, please be patient...';
 const SLOW_AFTER_MS = 7000;
 
+// Finale animation. The terminal turn (size + plants + guidance + present_results)
+// is one atomic /chat call that takes far longer than an ordinary question — long
+// enough that the generic "still percolating" reads like a timeout. When we're in
+// the home stretch (Growing Conditions is the active stage, so the plan turn is
+// next), we replace that with a cycle of whimsical "building your plan" phrases.
+// Like the address simulation, this is TIMED, not real telemetry. The phrases only
+// begin after FINALE_AFTER_MS, so a fast growing-conditions question that resolves
+// first never shows them — only the genuinely long finale does.
+const FINALE_PHRASES = [
+  'Measuring out your garden bed…',
+  'Handpicking plants that will thrive…',
+  'Leafing through gardening wisdom…',
+  'Drawing up your rain garden plan…',
+];
+const FINALE_AFTER_MS = 3500; // "percolating…" holds this long before the finale cycle
+const FINALE_PHASE_MS = 2600; // dwell per finale phrase after the first
+
+// The plan turn is the one the user answers while Growing Conditions is the active
+// (in-progress) stage. Site Conditions completes before it, so this cursor position
+// is the reliable "the finale is next" signal the client can read pre-request.
+function isFinaleLikely(stages: Stage[] | null): boolean {
+  return stages?.some((s) => s.id === 'growing_conditions' && s.state === 'in_progress') ?? false;
+}
+
 // Whimsical Submit-button labels cycled while the seed request is in flight. The
 // seed is one atomic /chat call (geocode + roof + first model turn), so the client
 // gets no mid-flight signal — this is a TIMED simulation of the work happening
@@ -29,7 +53,7 @@ const SUBMIT_PHRASES = [
 // plain rhythm so nothing flickers past. There is no entry for the final phrase
 // (index 4) — it simply holds until the request returns. A fast request may never
 // reach the later phrases, which is fine.
-const SUBMIT_PHASE_DELAYS = [2600, 2400, 2400, 2400];
+const SUBMIT_PHASE_DELAYS = [2700, 3100, 3100, 3100];
 // "Pinpointing your patch of earth…" (phase 0) IS the address lookup, so the move
 // off it — to phase 1 — is when the Address checkmark lands and Localized Data
 // picks up the in-progress cursor.
@@ -91,6 +115,9 @@ export function useRainGardenFlow(): FlowState & FlowActions {
   const lastUserMessage = useRef<string | null>(null);
   const slowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const submitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Latest stages, mirrored from each response so send/retry can read them fresh
+  // (the setState closure would be stale) to decide whether the next turn is the finale.
+  const stagesRef = useRef<Stage[] | null>(null);
 
   // Fire /warmup once on mount, fire-and-forget.
   useEffect(() => {
@@ -128,11 +155,29 @@ export function useRainGardenFlow(): FlowState & FlowActions {
     }
   }, []);
 
-  const startPendingTimer = useCallback(() => {
+  // Drives the pending label while a chat turn is in flight. Ordinary turns get the
+  // "still percolating" nudge after SLOW_AFTER_MS. Finale turns instead cycle the
+  // "building your plan" phrases (chained timeouts, first one longer), holding on the
+  // last if the turn runs long — a fast turn that resolves before FINALE_AFTER_MS
+  // never enters the cycle.
+  const startPendingTimer = useCallback((finaleLikely: boolean) => {
     if (slowTimer.current) clearTimeout(slowTimer.current);
-    slowTimer.current = setTimeout(() => {
-      setState((s) => (s.pending ? { ...s, pendingText: PENDING_TEXT_SLOW } : s));
-    }, SLOW_AFTER_MS);
+    if (!finaleLikely) {
+      slowTimer.current = setTimeout(() => {
+        setState((s) => (s.pending ? { ...s, pendingText: PENDING_TEXT_SLOW } : s));
+      }, SLOW_AFTER_MS);
+      return;
+    }
+    const step = (phase: number) => {
+      slowTimer.current = setTimeout(
+        () => {
+          setState((s) => (s.pending ? { ...s, pendingText: FINALE_PHRASES[phase] } : s));
+          if (phase < FINALE_PHRASES.length - 1) step(phase + 1);
+        },
+        phase === 0 ? FINALE_AFTER_MS : FINALE_PHASE_MS,
+      );
+    };
+    step(0);
   }, []);
 
   const clearPendingTimer = useCallback(() => {
@@ -146,6 +191,7 @@ export function useRainGardenFlow(): FlowState & FlowActions {
   const applyResponse = useCallback(
     (res: ChatResponse) => {
       wireMessages.current = res.messages ?? [];
+      if (res.stages) stagesRef.current = res.stages;
       if (res.roof_sqft !== null && res.roof_sqft !== undefined) {
         roofSqft.current = res.roof_sqft;
       }
@@ -269,7 +315,7 @@ export function useRainGardenFlow(): FlowState & FlowActions {
         pendingText: PENDING_TEXT,
         chatError: false,
       }));
-      startPendingTimer();
+      startPendingTimer(isFinaleLikely(stagesRef.current));
       continueChat(wireMessages.current, trimmed, roofSqft.current)
         .then((res) => {
           clearPendingTimer();
@@ -288,7 +334,7 @@ export function useRainGardenFlow(): FlowState & FlowActions {
     const msg = lastUserMessage.current;
     if (!msg) return;
     setState((s) => ({ ...s, pending: true, pendingText: PENDING_TEXT, chatError: false }));
-    startPendingTimer();
+    startPendingTimer(isFinaleLikely(stagesRef.current));
     continueChat(wireMessages.current, msg, roofSqft.current)
       .then((res) => {
         clearPendingTimer();

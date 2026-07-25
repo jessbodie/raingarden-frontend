@@ -48,7 +48,13 @@ export function AppShell({ landing }: { landing: ReactNode }) {
   return (
     <div className={`${styles.frame} ${locked ? styles.frameLocked : ''}`}>
       <AppHeader />
-      {showStepper && stages && <ProgressStepper stages={stages} declined={flow.declined} />}
+      {showStepper && stages && (
+        <ProgressStepper
+          stages={stages}
+          declined={flow.declined}
+          loading={flow.pending || flow.addressSubmitting}
+        />
+      )}
       <main className={`${styles.main} ${locked ? styles.mainLocked : ''}`}>
         {flow.phase === 'landing' && landing}
         {flow.phase === 'address' && <AddressScreen />}
