@@ -1,47 +1,42 @@
+// Ground-bar height, referenced by both the bar itself and the content's
+// bottom padding so the logo/wordmark sit flush on top of it.
+$ground-bar-height: 8px;
+
 .header {
-  background: var(--color-white);
-  // Layered raindrop-splash texture (four low-opacity ripple rings).
-  background-image: radial-gradient(
-      ellipse 46px 30px at 8% 60%,
-      transparent 0 10px,
-      rgba(65, 71, 112, 0.05) 10px 11px,
-      transparent 11px 20px,
-      rgba(65, 71, 112, 0.035) 20px 21px,
-      transparent 21px
-    ),
-    radial-gradient(
-      ellipse 34px 22px at 30% 26%,
-      transparent 0 7px,
-      rgba(65, 71, 112, 0.05) 7px 8px,
-      transparent 8px 15px,
-      rgba(65, 71, 112, 0.03) 15px 16px,
-      transparent 16px
-    ),
-    radial-gradient(
-      ellipse 62px 40px at 93% 55%,
-      transparent 0 14px,
-      rgba(65, 71, 112, 0.045) 14px 15px,
-      transparent 15px 27px,
-      rgba(65, 71, 112, 0.03) 27px 28px,
-      transparent 28px
-    ),
-    radial-gradient(
-      ellipse 30px 20px at 68% 80%,
-      transparent 0 6px,
-      rgba(65, 71, 112, 0.05) 6px 7px,
-      transparent 7px 13px,
-      rgba(65, 71, 112, 0.03) 13px 14px,
-      transparent 14px
-    );
+  position: relative;
+  // Locked light gradient (spec): pale blue at top → off-white at bottom.
+  background: linear-gradient(
+    180deg,
+    var(--color-secondary-light) 0%,
+    var(--color-white) 100%
+  );
   box-shadow: 0 2px 8px rgba(55, 34, 72, 0.12);
-  padding: 22px 40px;
+  // Left inset 24px; bottom padding == ground-bar height so content sits
+  // directly above the bar (bottom edge of content = top edge of bar).
+  padding: 8px 24px $ground-bar-height;
+
+  // Ground bar — solid sage strip pinned to the very bottom edge, full width,
+  // layered above the gradient. The logo reads as growing out of it.
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: $ground-bar-height;
+    background: var(--color-accent-light);
+  }
 }
 
 .inner {
   display: flex;
-  align-items: center;
+  // Bottom-align so the logo's bottom edge and the wordmark's baseline both
+  // land on the content-box bottom line (= top of the ground bar).
+  align-items: flex-end;
   gap: 14px;
-  overflow: visible;
+  // Sit above the ground-bar pseudo-element.
+  position: relative;
+  z-index: 1;
   // Rendered as an <a> home link — strip default link styling.
   text-decoration: none;
   color: inherit;
@@ -50,19 +45,31 @@
 }
 
 .logo {
-  height: clamp(84px, 10.2cqw, 120px);
+  // Portrait art (tightly cropped) — size by height, let width follow.
+  // The cropped art's bottom edge is flush with the SVG box, so flex-end
+  // puts it right on top of the ground bar. Bump this to taste.
+  height: 64px;
   width: auto;
   flex: 0 0 auto;
-  // Let the tall logo art overflow the header padding without growing it.
-  margin: calc(-1 * clamp(28px, 3.4cqw, 40px)) -0.6em;
+  display: block;
 }
 
 .title {
   margin: 0;
-  font-size: clamp(28px, 3.4cqw, 40px);
-  font-weight: 700;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 44px;
+  line-height: 1;
   color: var(--color-primary-dark);
-  letter-spacing: -0.01em;
+  // Trim the box below the baseline so the text box's bottom edge IS the
+  // alphabetic baseline. With the row's align-items: flex-end that seats the
+  // baseline exactly on the top of the ground bar, level with the logo's
+  // bottom edge — descenders (the "g") hang into the bar.
+  // (text-box-trim: Chrome 133+ / Safari 18.2+. Older browsers degrade to the
+  // baseline sitting ~0.14em above the bar; if that matters, replace these two
+  // lines with `margin-bottom: -0.14em`.)
+  text-box-trim: trim-end;
+  text-box-edge: cap alphabetic;
 }
 
 @container app (max-width: 560px) {
@@ -71,6 +78,6 @@
     padding-right: 18px;
   }
   .title {
-    font-size: 26px;
+    font-size: 20px;
   }
 }
