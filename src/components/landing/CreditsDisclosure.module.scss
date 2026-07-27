@@ -22,7 +22,7 @@
   transition: transform var(--motion-dur);
 }
 
-.title {
+.heading {
   font-size: 26px;
   font-weight: 500;
 }
@@ -35,10 +35,20 @@
   color: var(--text-body);
 }
 
-.placeholder {
+.group {
+  margin-bottom: 22px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.groupTitle {
   margin: 0 0 10px;
-  font-family: ui-monospace, monospace;
-  font-size: 11px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--text-muted);
 }
 
@@ -59,4 +69,31 @@
 .bullet {
   color: var(--color-primary);
   font-size: 11px;
+  line-height: 1.9;
+}
+
+.entry {
+  flex: 1;
+}
+
+.publisher {
+  font-weight: 500;
+}
+
+.title {
+  color: var(--text-body);
+}
+
+.link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.note {
+  color: var(--text-muted);
 }
