@@ -1,31 +1,91 @@
+import { Fragment } from 'react';
 import { asset } from '@/lib/config';
 import { PlanCtaButton } from './PlanCtaButton';
 import { SeasonalCarousel } from './SeasonalCarousel';
 import { CreditsDisclosure } from './CreditsDisclosure';
 import styles from './LandingScreen.module.scss';
 
+// Hero arrival animation ("Scattered", design_handoff_rain_hero). Delays are
+// hand-authored and deliberately out of order — the scatter IS the rain metaphor,
+// so don't "fix" them into a computed stagger. Durations live in the stylesheet.
+type HeroWord = [text: string, delaySeconds: number];
+
+const HERO_LINE_1: HeroWord[] = [
+  ['A', 0.18],
+  ['flood', 0.74],
+  ['is', 0],
+  ['made', 0.42],
+  ['from', 1.02],
+  ['millions', 0.28],
+  ['of', 1.24],
+  ['drops', 0.58],
+  ['adding', 0.9],
+  ['up.', 1.38],
+];
+
+const HERO_LINE_2: HeroWord[] = [
+  ['Flood', 2.02],
+  ['mitigation', 1.74],
+  ['is', 2.58],
+  ['built', 2.2],
+  ['one', 2.94],
+  ['garden', 1.86],
+  ['at', 2.72],
+  ['a', 2.36],
+  ['time.', 2.84],
+];
+
+const HERO_LINE_3: HeroWord[] = [
+  ['Give', 3.66],
+  ['the', 4.14],
+  ['rain', 3.5],
+  ['somewhere', 4.38],
+  ['to', 3.88],
+  ['go.', 4.6],
+];
+
+// Real whitespace between spans (not flex/gap) so the line still wraps as text.
+function ScatterWords({ words, className }: { words: HeroWord[]; className: string }) {
+  return (
+    <>
+      {words.map(([text, delay], i) => (
+        <Fragment key={`${text}-${i}`}>
+          {i > 0 && ' '}
+          <span className={className} style={{ animationDelay: `${delay}s` }}>
+            {text}
+          </span>
+        </Fragment>
+      ))}
+    </>
+  );
+}
+
 export function LandingScreen() {
   return (
     <div>
       {/* Hero */}
-      <div
-        className={styles.hero}
-        style={{
-          backgroundImage: `linear-gradient(135deg, rgba(55,34,72,.72) 0%, rgba(65,71,112,.68) 100%), url('${asset('/rg_front_wet_crop_sm.jpg')}')`,
-        }}
-      >
-        <div className={styles.heroHatch} />
+      <div className={styles.hero}>
+        <div
+          className={styles.heroPhoto}
+          style={{ backgroundImage: `url('${asset('/rg_front_wet_crop_sm.jpg')}')` }}
+        />
+        <div className={styles.heroScrim} />
         <div className={styles.heroInner}>
-          <p className={`${styles.heroLine} rga-fu`}>
-            A flood is made from millions of drops adding up
+          {/* Lines 1+2 collapse away together; the final line is a sibling outside. */}
+          <div className={styles.heroCollapse}>
+            <p className={styles.heroLine}>
+              <ScatterWords words={HERO_LINE_1} className={styles.heroWord} />
+            </p>
+            <p className={`${styles.heroLine} ${styles.heroLine2}`}>
+              <ScatterWords words={HERO_LINE_2} className={styles.heroWord} />
+            </p>
+          </div>
+          <p className={styles.heroFinal}>
+            <ScatterWords words={HERO_LINE_3} className={styles.heroWordFinal} />
           </p>
-          <p className={`${styles.heroLine} rga-fu2`}>
-            Flood mitigation is built one garden at a time.
-          </p>
-          <p className={`${styles.heroLine} ${styles.heroLineLast} rga-fu3`}>
-            Give the rain somewhere to go.
-          </p>
-          <PlanCtaButton />
+          <div className={styles.heroCta}>
+            <PlanCtaButton />
+          </div>
         </div>
       </div>
 

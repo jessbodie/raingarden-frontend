@@ -1,46 +1,156 @@
-.hero {
-  position: relative;
-  padding: 74px 40px 66px;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  overflow: hidden;
-}
-
-.heroHatch {
-  position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.05) 0 2px,
-    transparent 2px 22px
-  );
-  opacity: 0.4;
-}
-
-.heroInner {
-  position: relative;
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.heroLine {
-  margin: 0;
-  font-size: clamp(17px, 2.1cqw, 24px);
-  font-weight: 600;
-  color: var(--color-white);
-  line-height: 1.45;
-  word-spacing: 0.12em;
-  white-space: nowrap;
-
-  & + & {
-    margin-top: 8px;
+// HERO — one-shot arrival animation ("Scattered", design_handoff_rain_hero).
+// Words arrive, then lines 1+2 collapse while the hero crops shorter. That exit
+// is ONE gesture, so both animations read their timing from the same
+// `--hero-exit-*` properties and cannot drift apart.
+// Keyframes must live in this module (CLAUDE.md "Gotchas").
+@keyframes rgaScatter {
+  0% {
+    opacity: 0;
+    transform: translateY(-9px) scale(0.94);
+    filter: blur(5px);
+  }
+  65% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
   }
 }
 
-.heroLineLast {
-  margin-bottom: 30px;
+@keyframes rgaCollapseUp {
+  0% {
+    max-height: var(--hero-collapse-max);
+    opacity: 1;
+  }
+  45% {
+    opacity: 0;
+  }
+  100% {
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes rgaShrinkHero {
+  to {
+    height: var(--hero-height-end);
+  }
+}
+
+// Heights are custom properties so the breakpoints below only re-declare values.
+.hero {
+  --hero-height-start: 470px;
+  --hero-height-end: 290px;
+  --hero-collapse-max: 150px;
+
+  // The exit. Last word lands at 5.6s, so this is a short beat, then a fast
+  // launch into a smooth settle (easeOutQuint) — energetic, not a slow wipe.
+  --hero-exit-delay: 5.8s;
+  --hero-exit-dur: 0.7s;
+  --hero-exit-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  height: var(--hero-height-start);
+  overflow: hidden;
+  animation: rgaShrinkHero var(--hero-exit-dur) var(--hero-exit-ease) var(--hero-exit-delay)
+    forwards;
+}
+
+.heroPhoto {
+  position: absolute;
+  inset: 0;
+  background-position: center 42%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.heroScrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(58, 48, 88, 0.46) 0%,
+    rgba(58, 48, 88, 0.4) 55%,
+    rgba(58, 48, 88, 0.52) 100%
+  );
+}
+
+// Centered, so the copy rides up with the hero when it shrinks.
+.heroInner {
+  position: relative;
+  height: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+// Inherits the `--hero-exit-*` timing from `.hero`.
+.heroCollapse {
+  overflow: hidden;
+  animation: rgaCollapseUp var(--hero-exit-dur) var(--hero-exit-ease) var(--hero-exit-delay)
+    forwards;
+}
+
+// Deliberately lighter than the final line, so the hero no longer out-shouts
+// the 700-weight site wordmark.
+.heroLine {
+  margin: 0 0 6px;
+  font-size: 33px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.92); // handoff alpha; no token for it
+  text-shadow: 0 2px 12px rgba(28, 22, 48, 0.35);
+}
+
+.heroLine2 {
+  margin-bottom: 14px;
+}
+
+.heroFinal {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.005em;
+  color: var(--color-white-true);
+  text-shadow: 0 2px 14px rgba(28, 22, 48, 0.4);
+}
+
+// `inline-block` is what makes a word transformable; delays are set per word
+// inline (LandingScreen.tsx).
+.heroWord,
+.heroWordFinal {
+  display: inline-block;
+  animation: rgaScatter 0.9s ease-out both;
+}
+
+.heroWordFinal {
+  animation-duration: 1s;
+}
+
+// Intentionally not animated — the primary action stays clickable from first paint.
+.heroCta {
+  margin-top: 38px;
+}
+
+// globals.scss kills the animations outright; render the rest state directly.
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    height: var(--hero-height-end);
+  }
+  .heroCollapse {
+    max-height: 0;
+    opacity: 0;
+  }
 }
 
 .column {
@@ -192,7 +302,32 @@
   word-spacing: 0.04em;
 }
 
+// Wrapping below the desktop measure is fine, but `--hero-collapse-max` must stay
+// above the wrapper's real height at every width — the collapse starts from that
+// value, so if it clips, the copy jumps instead of sliding.
+
+// 33px lines, now two rows each; 470px still absorbs it.
+@container app (max-width: 1000px) {
+  .hero {
+    --hero-collapse-max: 240px;
+  }
+}
+
 @container app (max-width: 760px) {
+  .hero {
+    --hero-height-start: 380px;
+    --hero-height-end: 280px;
+    --hero-collapse-max: 240px;
+  }
+  .heroLine {
+    font-size: 24px;
+  }
+  .heroFinal {
+    font-size: 30px;
+  }
+  .heroCta {
+    margin-top: 30px;
+  }
   .about {
     gap: 20px;
   }
@@ -203,10 +338,18 @@
 
 @container app (max-width: 560px) {
   .hero {
-    padding: 40px 20px;
+    --hero-height-start: 360px;
+    --hero-height-end: 270px;
+    --hero-collapse-max: 220px;
+  }
+  .heroInner {
+    padding: 0 20px;
   }
   .heroLine {
-    white-space: normal;
+    font-size: 20px;
+  }
+  .heroFinal {
+    font-size: 26px;
   }
   .column {
     padding-left: 18px;
