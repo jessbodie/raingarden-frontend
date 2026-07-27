@@ -105,6 +105,16 @@ const GUIDANCE_SOURCES: Source[] = [
   },
 ];
 
+// AI/tool build colophon — how the project was made, not where its data came from.
+const BUILT_WITH: Source[] = [
+  { publisher: 'Claude Chat', title: 'planning, notebook port, and architecture' },
+  { publisher: 'Claude Code', title: 'backend, agent loop, and tests' },
+  { publisher: 'Claude Design', title: 'visual system and UI' },
+  { publisher: 'Recraft', title: 'logo and brand mark' },
+];
+
+const BUILT_WITH_STORY = 'https://github.com/jessbodie/rain-garden-advisor#how-ai-was-used';
+
 function SourceItem({ source }: { source: Source }) {
   return (
     <li className={styles.item}>
@@ -166,6 +176,24 @@ export function CreditsDisclosure() {
                 <SourceItem key={s.publisher + s.title} source={s} />
               ))}
             </ul>
+          </section>
+          <section className={styles.group}>
+            <h3 className={styles.groupTitle}>Tools</h3>
+            <ul className={styles.list}>
+              {BUILT_WITH.map((s) => (
+                <SourceItem key={s.publisher + s.title} source={s} />
+              ))}
+            </ul>
+            <p className={styles.groupNote}>
+              <a
+                className={styles.link}
+                href={BUILT_WITH_STORY}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                How AI was used →
+              </a>
+            </p>
           </section>
         </div>
       )}
