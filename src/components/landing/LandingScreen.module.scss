@@ -127,17 +127,27 @@
 }
 
 // --- Full-bleed showcase ---
+// Breaks all the way out of the 760px reading column to the app container's
+// full width (matching the hero), but stops growing at 1920px — the source
+// image's native width — so it never upscales into mush on a very large or
+// ultrawide monitor. Past that cap it centers with symmetric gutters, which
+// reads as a deliberate band rather than a stretched photo.
 .showcase {
-  margin: 56px -40px 0;
+  margin: 64px 0 0;
+  width: min(100cqw, 1920px);
+  margin-left: calc(50% - min(50cqw, 960px));
 }
 
+// Height follows the rendered width (so the crop ratio stays constant instead
+// of drifting with window height, as `60vh` did), floored for narrow screens
+// and capped so the band never eats a whole large viewport.
 .showcaseImg {
-  height: 60vh;
+  aspect-ratio: 16 / 6;
   min-height: 340px;
+  max-height: 620px;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  box-shadow: var(--shadow-soft);
 }
 
 // --- About Me ---
@@ -151,7 +161,9 @@
 .aboutPortrait {
   flex: 0 0 auto;
   width: 150px;
-  height: 180px;
+  max-width: 32%;
+  aspect-ratio: 5 / 6;
+  height: auto;
   border-radius: 0;
   box-shadow: var(--shadow-soft);
   overflow: hidden;
@@ -182,11 +194,10 @@
 
 @container app (max-width: 760px) {
   .about {
-    flex-direction: column;
+    gap: 20px;
   }
   .aboutPortrait {
-    width: 100%;
-    height: 180px;
+    width: 120px;
   }
 }
 
@@ -201,8 +212,10 @@
     padding-left: 18px;
     padding-right: 18px;
   }
-  .showcase {
-    margin-left: -18px;
-    margin-right: -18px;
+  .about {
+    gap: 16px;
+  }
+  .aboutPortrait {
+    width: 96px;
   }
 }

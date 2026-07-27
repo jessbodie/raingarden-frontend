@@ -5,9 +5,9 @@ import { asset } from '@/lib/config';
 import styles from './SeasonalCarousel.module.scss';
 
 const GALLERY = [
-  { src: '/rg_back_wet_july_crop.jpg', month: 'July' },
-  { src: '/rg_back_wet_april_crop.jpg', month: 'April' },
-  { src: '/rg_back_dry_sep_crop.jpg', month: 'September' },
+  { src: '/rg_back_wet_july_crop.jpg', month: 'Another rain storm (July)' },
+  { src: '/rg_back_wet_april_crop.jpg', month: 'First spring-time storm (April)' },
+  { src: '/rg_back_dry_sep_crop.jpg', month: 'Newly planted (September)' },
 ];
 
 export function SeasonalCarousel() {
@@ -54,7 +54,7 @@ export function SeasonalCarousel() {
         </div>
       </div>
       <figcaption className={styles.caption}>
-        This rain garden was planted in September 2025.
+        Backyard rain garden 
       </figcaption>
     </figure>
   );
