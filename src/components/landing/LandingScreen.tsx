@@ -96,7 +96,7 @@ export function LandingScreen() {
           />
         </figure>
 
-        {/* About Me — PLACEHOLDER bio */}
+        {/* About Me */}
         <div className={styles.about}>
           <div className={styles.aboutPortrait}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -105,10 +105,7 @@ export function LandingScreen() {
           <div>
             <h2 className={styles.aboutHeading}>About Me</h2>
             <p className={styles.aboutBio}>
-              PLACEHOLDER: Replacing turf lawn with more sustainable ground covers is my current
-              fascination — and I&apos;m documenting the whole hopeful, muddy progress, my own two
-              rain gardens included, over on Instagram:{' '}
-              <a href="#">@sustainable.urban.gardening</a>.
+              I'm Jess — a home gardener who's put in two rain gardens of my own, one soggy season at a time. This advisor is what I built once I had the sizing math and plant logic dialed in: the same processes I use, turned into something anyone else with a yard and a downspout can run themselves.
             </p>
           </div>
         </div>
