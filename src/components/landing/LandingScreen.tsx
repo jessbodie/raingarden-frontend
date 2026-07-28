@@ -93,35 +93,29 @@ export function LandingScreen() {
         {/* Explainer */}
         <div className={styles.explainer}>
           <p className={styles.explainerP}>
-            A rain garden is a shallow, planted dip in your yard, set where runoff already flows.
-            It catches the water sheeting off your roof and driveway — your share of what would
-            otherwise rush to the storm drain.
+            A rain garden is a shallow dip in your yard, planted where the water already runs — it
+            catches what pours off your roof and driveway before it races to the storm drain.
           </p>
+          <h2 className={styles.explainerHeading}>What it does</h2>
           <ul className={styles.explainerList}>
             <li className={styles.explainerItem}>
               <span className={styles.explainerBullet}>■</span>
-              <span>
-                <strong>Soak, don&apos;t flood.</strong> It sinks in slowly instead of overwhelming
-                the sewer.
-              </span>
+              <span>Your yard drinks it in instead of drowning.</span>
             </li>
             <li className={styles.explainerItem}>
               <span className={styles.explainerBullet}>■</span>
               <span>
-                <strong>Filter the bad stuff.</strong> Soil and deep roots trap oil, fertilizer,
-                and grit before they reach our creeks and rivers.
+                Roots and soil strain out oil, fertilizer, and grit before they reach the creek.
               </span>
             </li>
             <li className={styles.explainerItem}>
               <span className={styles.explainerBullet}>■</span>
-              <span>
-                <strong>Habitat, too.</strong> Flowering plants bring in pollinators.
-              </span>
+              <span>Flowers throw a pollinator party.</span>
             </li>
           </ul>
           <p className={styles.explainerP}>
-            Small effort, real math: one modest garden can divert thousands of gallons a year.
-            Multiply that by a block.
+            When everything's paved, rain has nowhere to sink.  One rain garden soaks up thousands of
+            gallons a year — a whole block of them is how a neighborhood stops flooding.
           </p>
         </div>
 
@@ -131,17 +125,12 @@ export function LandingScreen() {
         <div className={styles.how}>
           <h2 className={styles.eyebrow}>How it works</h2>
           <ol className={styles.steps}>
-            <li>
-              Enter your address — anywhere in the contiguous U.S. — and we pull your local
-              rainfall and growing conditions.
-            </li>
-            <li>Answer a few questions — soil, sun, space, water source.</li>
-            <li>Get your plan — size, depth, and plants for your rain garden.</li>
+            <li>Enter your address — we pull your rainfall and growing conditions.</li>
+            <li>Answer a few quick questions — soil, sun, space.</li>
+            <li>Get your plan — how big, how deep, what to plant, done.</li>
           </ol>
           <p className={styles.howP}>
-            If you&apos;ve got a patch of yard, a downspout or two, and a free weekend in you — this
-            is for you. No landscaping experience required. This is a beginner-friendly,
-            dig-it-yourself way to pitch in on storm water management.
+            A beginner-friendly, dig-it-yourself way to pitch in on stormwater.
           </p>
           <div className={styles.howCta}>
             <PlanCtaButton />
